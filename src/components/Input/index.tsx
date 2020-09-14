@@ -10,8 +10,6 @@ import { FiAlertCircle } from "react-icons/fi";
 import { useField } from "@unform/core";
 import { Container, Error } from "./styles";
 
-import Tooltip from "../Tooltip";
-
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   icon: React.ComponentType<IconBaseProps>;
@@ -47,7 +45,6 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
         defaultValue={defaultValue}
         ref={inputRef}
         {...rest}
-        type="text"
       />
       {error && (
         <Error title={error}>
