@@ -1,6 +1,12 @@
+/* eslint-disable camelcase */
 import React, { createContext, useCallback, useState, useContext } from "react";
 import api from "../services/api";
 
+interface User {
+  id: string;
+  avatar_url: string;
+  name: string;
+}
 interface SignInCredentials {
   email: string;
   password: string;
@@ -9,20 +15,17 @@ interface SignInCredentials {
 interface AuthContextData {
   name: string;
   signIn(credentials: SignInCredentials): Promise<void>;
-  user: object;
-  signOut():void
+  user: User;
+  signOut(): void;
 }
 interface AuthState {
   token: string;
-  user: object;
+  user: User;
 }
 
-const AuthContext = createContext<AuthContextData>(
-  {} as AuthContextData
-);
+const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export const AuthProvider: React.FC = ({ children }) => {
-
   const [data, setData] = useState<AuthState>(() => {
     const token = localStorage.getItem("@gobarber:token");
     const user = localStorage.getItem("@gobarber:user");
@@ -46,28 +49,28 @@ export const AuthProvider: React.FC = ({ children }) => {
     localStorage.setItem("@gobarber:user", JSON.stringify(user));
 
     setData({ token, user });
-
   }, []);
 
-  const signOut = useCallback(() =>{
-  localStorage.removeitem("@gobarber:token");
-  localStorage.removeitem("@gobarber:user");
-  setData({} as AuthState)
-},[]);
+  const signOut = useCallback(() => {
+    localStorage.removeItem("@gobarber:token");
+    localStorage.removeItem("@gobarber:user");
+    setData({} as AuthState);
+  }, []);
   return (
-    <AuthContext.Provider value={{ name: "Igor", signIn, user: data.user, signOut }}>
+    <AuthContext.Provider
+      value={{ name: "Igor", signIn, user: data.user, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = ():AuthContextData =>{
+export const useAuth = (): AuthContextData => {
+  const context = useContext(AuthContext);
 
-  const context = useContext(AuthContext)
-
-  if(!context){
-    throw new Error('useAuth must be used within an AuthProvider')
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
   }
 
-  return context
-}
+  return context;
+};
